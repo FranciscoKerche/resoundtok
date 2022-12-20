@@ -1,11 +1,11 @@
 Package: resoundtok
-Title: What the Package Does (One Line, Title Case)
+Title: Deals with data from TikTok for the RESOUND project
 Version: 0.0.0.9000
 Authors@R: 
     person("Kerche", "Francisco", , "chicowkn@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9621-880X"))
 Description: What the package does (one paragraph).
-License: MIT + file LICENSE
+License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
@@ -14,6 +14,7 @@ Imports:
     dplyr,
     janitor,
     lubridate,
+    purrr,
     stringr,
     tidyr
 URL: https://github.com/FranciscoKerche/resoundtok

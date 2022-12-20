@@ -7,14 +7,12 @@
 read_tok(.x)
 }
 \arguments{
-\item{string.}{Path to data-set.}
+\item{.x}{string. Path to data-set.}
 }
 \description{
 The function will clean and organize columns extracted from the the web-app zeeschwimer.
 }
 \examples{
-
-read_tok('path/to/file')
-
+read_tok("path/to/file")
 
 }
