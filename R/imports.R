@@ -12,24 +12,50 @@
 #' @export
 
 read_tok <- function(.x){
-  result <- corpus::read_ndjson(.x) |>
-    dplyr::tibble() |>
-    janitor::clean_names() |>
-    dplyr::select(item_id, source_platform_url, description = data_desc, create_time = data_create_time, duration = data_video_duration,
-           ratio = data_video_ratio, cover = data_video_cover, origin_cover = data_video_origin_cover,
-           quality = data_video_format, music_id = data_music_id, music_title = data_music_title,
-           music_cover = data_music_cover_medium, music_author = data_music_author_name, original_music = data_music_original,
-           album_music = data_music_album, digg_count = data_stats_digg_count, share_count = data_stats_share_count,
-           comment_count = data_stats_comment_count, play_count = data_stats_play_count) |>
-    dplyr::mutate(create_time = purrr::invoke_map(as.numeric, create_time),
-           author = stringr::str_sub(source_platform_url, nchar("https://www.tiktok.com/"), -1),
-           engagement = digg_count + comment_count + share_count,
-           reach = play_count) |>
-    tidyr::unnest(create_time) |>
-    dplyr::mutate(create_time = lubridate::as_datetime(create_time)) |>
-    dplyr::mutate(post_url = stringr::str_c(source_platform_url, "/video/", item_id)) |>
-    dplyr::rename(text = description)
+  original_data <- corpus::read_ndjson(.x)
 
+  text_on_screen <- purrr::map(original_data$data.stickersOnItem, list(1, "stickerText")) |>
+    purrr::map_chr(paste0, collapse = " ")
+
+  challenge_title <- purrr::map_depth(original_data$data.challenges, .depth = 2, "title") |>
+    purrr::map_chr(paste0, collapse = "; ")
+
+  sticker_name <- purrr::map_depth(original_data$data.effectStickers, .depth = 2, "name") |>
+    purrr::map_chr(paste0, collapse = "; ")
+
+  sticker_id = purrr::map_depth(original_data$data.effectStickers, .depth = 2, "ID") |>
+    purrr::map_chr(paste0, collapse = "; ")
+
+  table_read <- original_data |>
+    dplyr::tibble() |>
+    dplyr::select(item_id, source_url, source_platform_url, user_avatar = data.author.avatarMedium,
+                  user_id = data.author.id, username = data.author.nickname, user_private = data.author.privateAccount,
+                  bio = data.author.signature, user = data.author.uniqueId, verified = data.author.verified,
+                  video_id = data.id, user_like_count = data.authorStats.diggCount, user_followers = data.authorStats.followerCount,
+                  user_following = data.authorStats.followingCount, user_total_likes = data.authorStats.heartCount,
+                  user_video_count = data.authorStats.videoCount, description = data.desc, comment_count = data.stats.commentCount,
+                  like_count = data.stats.diggCount, play_count = data.stats.playCount, share_count = data.stats.shareCount,
+                  created_at = data.createTime, music_title = data.music.title, music_album = data.music.album, music_author = data.music.authorName,
+                  music_cover = data.music.coverLarge, music_url = data.music.playUrl, video_duration = data.video.duration,
+                  video_cover = data.video.originCover, music_duration = data.music.duration)
+  make_clean <- function(.x){
+    if(length(.x) == 0){
+      clean <- rep("", nrow(table_read))
+    } else{
+      clean <- .x
+    }
+    return(clean)
+  }
+
+  result <- table_read |>
+    dplyr::mutate(video_text = make_clean(text_on_screen),
+                  challenges = make_clean(challenge_title),
+                  effect_name = make_clean(sticker_name),
+                  effect_id = make_clean(sticker_id),
+                  created_at = purrr::invoke_map_int(as.integer, created_at),
+                  engagement = like_count + comment_count + share_count)|>
+    tidyr::unnest(created_at) |>
+    dplyr::mutate(created_at = lubridate::as_datetime(created_at))
   return(result)
 }
 
