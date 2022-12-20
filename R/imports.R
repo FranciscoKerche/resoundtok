@@ -26,7 +26,7 @@ read_tok <- function(.x){
            engagement = digg_count + comment_count + share_count,
            reach = play_count) |>
     tidyr::unnest(create_time) |>
-    dplyr::mutate(date = lubridate::as_datetime(create_time)) |>
+    dplyr::mutate(create_time = lubridate::as_datetime(create_time)) |>
     dplyr::mutate(post_url = stringr::str_c(source_platform_url, "/video/", item_id)) |>
     dplyr::rename(text = description)
 
