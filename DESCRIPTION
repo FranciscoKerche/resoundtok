@@ -16,3 +16,5 @@ Imports:
     lubridate,
     stringr,
     tidyr
+URL: https://github.com/FranciscoKerche/resoundtok
+BugReports: https://github.com/FranciscoKerche/resoundtok/issues
