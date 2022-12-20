@@ -13,7 +13,8 @@
 #'
 
 read_tok <- function(.x){
-  result <- .x %>%
+  result <- corpus::read_ndjson(.x) %>%
+    dplyr::tibble() %>%
     janitor::clean_names() %>%
     dplyr::select(item_id, source_platform_url, description = data_desc, create_time = data_create_time, duration = data_video_duration,
            ratio = data_video_ratio, cover = data_video_cover, origin_cover = data_video_origin_cover,
