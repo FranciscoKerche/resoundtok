@@ -59,3 +59,34 @@ read_tok <- function(.x){
   return(result)
 }
 
+#' Make sure not to have overlapping data from multiple tiktok imports
+#'
+#' @description
+#' The function will get a tiktok input and update it to the highest value in "vanity metrics", such as likes
+#' comments, shares and other aspects. This will allow the user to create multiple extractions
+#' and simplify the process of curating which ones would overlap.
+#'
+#' @param .x table. A table of tiktok data structured with the read_tok function.
+#'
+#' @examples
+#' latest_tok(dabloons)
+#'
+#' @export
+
+latest_tok <- function(.x){
+  strings <- .x |>
+    dplyr::group_by(item_id) |>
+    dplyr::slice(1) |>
+    dplyr::ungroup() |>
+    dplyr::select(where(is.character), where(is.logical), created_at)
+
+  numericals <- .x |>
+    dplyr::mutate_if(is.integer, as.numeric) |>
+    dplyr::group_by(item_id) |>
+    dplyr::summarise_if(is.numeric, max)
+
+
+  final <- numericals |>
+    dplyr::left_join(strings)
+  return(final)
+}
