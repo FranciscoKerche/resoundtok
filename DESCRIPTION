@@ -1,10 +1,10 @@
 Package: resoundtok
-Title: Deals with data from TikTok for the RESOUND project
+Title: resoundtok: Understanding speed in social media
 Version: 0.0.0.9000
 Authors@R: 
     person("Kerche", "Francisco", , "chicowkn@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9621-880X"))
-Description: What the package does (one paragraph).
+Description: This package will focus on creating easy to use tools for data analysis in TikTok. It will be the cornerstone for the RESOUND project considering tiktok specifically.
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
