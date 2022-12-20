@@ -11,19 +11,21 @@
 #'
 #' @export
 
+
 read_tok <- function(.x){
-  original_data <- corpus::read_ndjson(.x)
+
+  original_data <- corpus::read_ndjson(all_bloons[5])
 
   text_on_screen <- purrr::map(original_data$data.stickersOnItem, list(1, "stickerText")) |>
     purrr::map_chr(paste0, collapse = " ")
 
-  challenge_title <- purrr::map_depth(original_data$data.challenges, .depth = 2, "title") |>
+  challenge_title <- purrr::map_depth(original_data$data.challenges, .depth = 2, .ragged = T, "title") |>
     purrr::map_chr(paste0, collapse = "; ")
 
-  sticker_name <- purrr::map_depth(original_data$data.effectStickers, .depth = 2, "name") |>
+  sticker_name <- purrr::map_depth(original_data$data.effectStickers, .depth = 2, .ragged = T, "name") |>
     purrr::map_chr(paste0, collapse = "; ")
 
-  sticker_id = purrr::map_depth(original_data$data.effectStickers, .depth = 2, "ID") |>
+  sticker_id = purrr::map_depth(original_data$data.effectStickers, .depth = 2, .ragged = T, "ID") |>
     purrr::map_chr(paste0, collapse = "; ")
 
   table_read <- original_data |>
@@ -58,6 +60,7 @@ read_tok <- function(.x){
     dplyr::mutate(created_at = lubridate::as_datetime(created_at))
   return(result)
 }
+
 
 #' Make sure not to have overlapping data from multiple tiktok imports
 #'
