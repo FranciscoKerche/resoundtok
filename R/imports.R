@@ -106,6 +106,7 @@ latest_tok <- function(.x){
 
 
   final <- numericals |>
-    dplyr::left_join(strings)
+    dplyr::left_join(strings) |>
+    dplyr::select(colnames(.x))
   return(final)
 }
