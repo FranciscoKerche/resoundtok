@@ -73,7 +73,8 @@ read_tok <- function(.x){
                   created_at = as.integer(created_at),
                   engagement = like_count + comment_count + share_count)|>
     tidyr::unnest(created_at) |>
-    dplyr::mutate(created_at = lubridate::as_datetime(created_at))
+    dplyr::mutate(created_at = lubridate::as_datetime(created_at),
+                  video_url = glue::glue('https://www.tiktok.com/@{user}/video/{item_id}'))
   return(result)
 }
 
